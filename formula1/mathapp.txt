@@ -1,0 +1,454 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MathApp());
+}
+
+class MathApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Formula Square',
+      theme: ThemeData(
+        primaryColor: Colors.blue,
+        fontFamily: 'Roboto',
+      ),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginPage(),
+        '/home': (context) => HomePage(),
+        '/formulas': (context) => FormulasPage(),
+        '/theorems': (context) => TheoremsPage(),
+      },
+    );
+  }
+}
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _phoneController,
+                decoration: InputDecoration(
+                  labelText: 'Phone Number',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your phone number';
+                  } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                    return 'Please enter a valid phone number';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 24.0),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() == true) {
+                      Navigator.pushReplacementNamed(context, '/home');
+                    }
+                  },
+                  child: Text('Enter'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
+      drawer: SideDashboard(),
+      body: Container(
+        decoration: BoxDecoration(
+         image:DecorationImage(
+         image:NetworkImage(
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMxMZMSfnStGvuA9RztHTRWYkHdO7x9mMlQw&s' ),
+           fit:BoxFit.cover,
+         ),
+         
+        ),
+        child: Center(
+          child: Text(
+            'Welcome to Formula Square',
+            style: TextStyle(fontSize: 30.0,color: Colors.white,fontFamily: 'Lucida',),
+                           
+           
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.functions),
+            label: 'Formulas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment),
+            label: 'Theorems',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: Colors.blue,
+        onTap: (index) {
+          switch (index) {
+            case 1:
+              Navigator.pushNamed(context, '/formulas');
+              break;
+            case 2:
+              Navigator.pushNamed(context, '/theorems');
+              break;
+            default:
+              // Navigate to Home or do nothing
+              break;
+          }
+        },
+      ),
+    );
+  }
+}
+
+class SideDashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text(
+              'Formula Square',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Home'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/home');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.functions),
+            title: Text('Math Formulas'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/formulas');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.assignment),
+            title: Text('Math Theorems'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/theorems');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FormulasPage extends StatefulWidget {
+  final List<Map<String, String>> formulas = [
+    {"title": "Formula 1", "formula": "a² + b² = c²"},
+    {"title": "Pythagorean Theorem", "formula": "a² + b² = c²"},
+    {"title": "Quadratic Formula", "formula": "x = (-b ± √(b² - 4ac)) / 2a"},
+    {"title": "Area of Circle", "formula": "A = πr²"},
+    {"title": "Circumference of Circle", "formula": "C = 2πr"},
+    {"title": "Area of Rectangle", "formula": "A = lw"},
+    {"title": "Perimeter of Rectangle", "formula": "P = 2(l + w)"},
+    {"title": "Area of Triangle", "formula": "A = ½bh"},
+    {"title": "Volume of Sphere", "formula": "V = 4/3πr³"},
+    {"title": "Volume of Cylinder", "formula": "V = πr²h"},
+    {"title": "Volume of Cone", "formula": "V = 1/3πr²h"},
+    {"title": "Euler's Formula", "formula": "e^(iπ) + 1 = 0"},
+    {"title": "Binomial Theorem", "formula": "(a + b)ⁿ = Σ (n choose k) aⁿ⁻ᵏ bᵏ"},
+    {"title": "Sum of Arithmetic Series", "formula": "Sₙ = n/2 (a + l)"},
+    {"title": "Sum of Geometric Series", "formula": "Sₙ = a(1 - rⁿ) / (1 - r)"},
+    {"title": "Heron's Formula", "formula": "A = √[s(s - a)(s - b)(s - c)]"},
+    {"title": "Slope of Line", "formula": "m = (y₂ - y₁) / (x₂ - x₁)"},
+    {"title": "Midpoint of Line Segment", "formula": "M = ((x₁ + x₂) / 2, (y₁ + y₂) / 2)"},
+    {"title": "Distance Formula", "formula": "D = √[(x₂ - x₁)² + (y₂ - y₁)²]"},
+    {"title": "Law of Sines", "formula": "a/sin(A) = b/sin(B) = c/sin(C)"},
+    {"title": "Law of Cosines", "formula": "c² = a² + b² - 2ab cos(C)"},
+    {"title": "Gaussian Integral", "formula": "∫ e^(-x²) dx = √π"},
+  ];
+
+  @override
+  _FormulasPageState createState() => _FormulasPageState();
+}
+
+class _FormulasPageState extends State<FormulasPage> {
+  String _searchQuery = '';
+
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, String>> filteredFormulas = _searchQuery.isEmpty
+        ? widget.formulas
+        : widget.formulas.where((formula) {
+            String title = formula['title']!.toLowerCase();
+            String formulaText = formula['formula']!.toLowerCase();
+            return title.contains(_searchQuery.toLowerCase()) ||
+                formulaText.contains(_searchQuery.toLowerCase());
+          }).toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Math Formulas'),
+      ),
+      drawer: SideDashboard(),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Search',
+                hintText: 'Search for formulas...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredFormulas.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  elevation: 2.0,
+                  child: ListTile(
+                    title: Text(
+                      filteredFormulas[index]['title']!,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(filteredFormulas[index]['formula']!),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TheoremsPage extends StatefulWidget {
+  final List<Map<String, String>> theorems = [
+    {"title": "Pythagorean Theorem", "theorem": "a² + b² = c²"},
+    {"title": "Fundamental Theorem of Arithmetic", "theorem": "Every integer > 1 is either prime or a product of primes."},
+    {"title": "Fundamental Theorem of Algebra", "theorem": "Every non-zero polynomial has at least one root in the complex numbers."},
+    {"title": "Fundamental Theorem of Calculus", "theorem": "Connects differentiation and integration."},
+    {"title": "Euclid's Theorem", "theorem": "There are infinitely many prime numbers."},
+    {"title": "Fermat's Last Theorem", "theorem": "No three positive integers a, b, and c satisfy aⁿ + bⁿ = cⁿ for any integer n > 2."},
+    {"title": "Noether's Theorem", "theorem": "Every differentiable symmetry of the action of a physical system has a corresponding conservation law."},
+    {"title": "Gödel's Incompleteness Theorems", "theorem": "In any consistent formal system, there are true statements that cannot be proven within the system."},
+    {"title": "Bayes' Theorem", "theorem": "Describes the probability of an event based on prior knowledge of conditions related to the event."},
+    {"title": "Central Limit Theorem", "theorem": "The distribution of the sum of a large number of independent, identically distributed variables approaches a normal distribution."},
+    {"title": "Green's Theorem", "theorem": "Relates the double integral over a plane region to a line integral around the plane's boundary."},
+    {"title": "Stokes' Theorem", "theorem": "Generalizes Green's theorem to higher dimensions."},
+    {"title": "Gauss's Theorem (Divergence Theorem)", "theorem": "Relates the flux of a vector field through a surface to the divergence of the field in the volume enclosed."},
+    {"title": "Rolle's Theorem", "theorem": "If a differentiable function has equal values at two points, it has a stationary point somewhere between them."},
+    {"title": "L'Hôpital's Rule", "theorem": "Helps find limits of indeterminate forms."},
+    {"title": "Cauchy's Theorem", "theorem": "Integral of a complex function over a closed curve is zero if the function is analytic inside the curve."},
+    {"title": "Liouville's Theorem", "theorem": "Every bounded entire function is constant."},
+    {"title": "Fourier Transform Theorem", "theorem": "Relates a function in the time domain to its representation in the frequency domain."},
+    {"title": "Bézout's Identity", "theorem": "Describes the greatest common divisor of two integers in terms of linear combinations."},
+    {"title": "Burnside's Lemma", "theorem": "Counts distinct objects under group actions."},
+  ];
+
+  @override
+  _TheoremsPageState createState() => _TheoremsPageState();
+}
+
+class _TheoremsPageState extends State<TheoremsPage> {
+  String _searchQuery = '';
+
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, String>> filteredTheorems = _searchQuery.isEmpty
+        ? widget.theorems
+        : widget.theorems.where((theorem) {
+            String title = theorem['title']!.toLowerCase();
+            String theoremText = theorem['theorem']!.toLowerCase();
+            return title.contains(_searchQuery.toLowerCase()) ||
+                theoremText.contains(_searchQuery.toLowerCase());
+          }).toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Math Theorems'),
+      ),
+      drawer: SideDashboard(),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Search',
+                hintText: 'Search for theorems...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredTheorems.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  elevation: 2.0,
+                  child: ListTile(
+                    title: Text(
+                      filteredTheorems[index]['title']!,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(filteredTheorems[index]['theorem']!),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Dashboard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text(
+              'Formula Square',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Home'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/home');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.functions),
+            title: Text('Math Formulas'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/formulas');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.assignment),
+            title: Text('Math Theorems'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/theorems');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
